@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Martin Björck — Tryckare & Fotograf</title>
+  <meta name="description" content="Martin Björck — professionell tryckare sedan 1990 och fotograf. Portfolio, CV och kontakt. Baserad i Helsingborg." />
+  <meta name="author" content="Martin Björck" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --s0:#3a2e22; --s1:#6b5840; --s2:#8b7355; --s3:#c4a882;
+      --s4:#d9c4a0; --s5:#e8d5b7; --s6:#f5ece0; --s7:#faf5ed;
+      --accent:#c4752e; --accent2:#a05a1a;
+      --r:3px; --ease:cubic-bezier(.4,0,.2,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Jost',sans-serif;font-weight:300;background:var(--s7);color:var(--s0);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+    /* BG — same as photo page */
+    .bg-layer{position:fixed;inset:0;z-index:-3;pointer-events:none;
+      background:radial-gradient(ellipse 140% 70% at 15% 105%,rgba(196,168,130,.35) 0%,transparent 55%),
+                radial-gradient(ellipse 80% 55% at 85% -5%,rgba(232,213,183,.3) 0%,transparent 50%),
+                linear-gradient(170deg,#faf5ed 0%,#f0e3cc 35%,#e8d5b7 65%,#d4bc96 100%)}
+    .grain-layer{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.45;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+      background-size:300px}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:90;display:flex;align-items:center;justify-content:space-between;
+      padding:1.2rem 3rem;background:linear-gradient(to bottom,rgba(250,245,237,.96) 0%,rgba(250,245,237,0) 100%);
+      backdrop-filter:blur(6px)}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--s0);text-decoration:none;letter-spacing:.04em}
+    .nav-links{display:flex;gap:2rem;list-style:none}
+    .nav-links a{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--s1);text-decoration:none;transition:color .25s}
+    .nav-links a:hover{color:var(--accent)}
+    .nav-burger{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:4px}
+    .nav-burger span{display:block;width:24px;height:1px;background:var(--s1);transition:all .3s}
+    .nav-burger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+    .nav-burger.open span:nth-child(2){opacity:0}
+    .nav-burger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+    .mobile-menu{display:none;position:fixed;inset:0;z-index:89;background:rgba(250,245,237,.97);backdrop-filter:blur(12px);
+      flex-direction:column;align-items:center;justify-content:center;gap:2.5rem}
+    .mobile-menu.open{display:flex}
+    .mobile-menu a{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--s0);text-decoration:none;transition:color .2s}
+    .mobile-menu a:hover{color:var(--accent)}
+    @media(max-width:680px){nav{padding:1rem 1.5rem}.nav-links{display:none}.nav-burger{display:flex}}
+
+    /* HERO */
+    header{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:6rem 2rem 8rem;position:relative}
+    .hero-eyebrow{font-size:.7rem;letter-spacing:.4em;text-transform:uppercase;color:var(--s2);margin-bottom:1.8rem;
+      opacity:0;animation:fadeUp .9s ease .2s forwards}
+    h1{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(4rem,12vw,9rem);line-height:.92;
+      color:var(--s0);letter-spacing:-.01em;opacity:0;animation:fadeUp .9s ease .4s forwards}
+    h1 em{font-style:italic;color:var(--accent)}
+    .hero-tagline{font-size:clamp(.8rem,1.8vw,.95rem);letter-spacing:.22em;text-transform:uppercase;color:var(--s2);
+      margin-top:2rem;opacity:0;animation:fadeUp .9s ease .6s forwards}
+    .hero-sub{font-size:.82rem;color:var(--s3);margin-top:.8rem;opacity:0;animation:fadeUp .9s ease .75s forwards;font-style:italic}
+    .hero-scroll{margin-top:4rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;
+      opacity:0;animation:fadeUp .9s ease .9s forwards}
+    .hero-scroll span{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--s3)}
+    .scroll-line{width:1px;height:60px;background:linear-gradient(to bottom,var(--s3),transparent);animation:scrollPulse 2s ease-in-out infinite}
+    @keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
+    .dune-wave{position:absolute;bottom:0;left:0;width:100%;overflow:hidden;line-height:0}
+    .dune-wave svg{display:block;width:100%}
+
+    /* SECTION HEADERS */
+    .section-header{text-align:center;padding:5rem 2rem 3rem}
+    .section-tag{display:block;font-size:.65rem;letter-spacing:.38em;text-transform:uppercase;color:var(--s2);margin-bottom:.9rem}
+    .section-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.2rem,6vw,4rem);color:var(--s0);line-height:1}
+    .section-title em{font-style:italic;color:var(--accent)}
+
+    /* RULE */
+    .accent-rule{width:36px;height:1px;background:var(--accent);margin:1.5rem auto}
+
+    /* ABOUT */
+    #om{max-width:1100px;margin:0 auto;padding:0 2rem 6rem;display:grid;grid-template-columns:1fr 1.5fr;gap:6rem;align-items:start}
+    @media(max-width:760px){#om{grid-template-columns:1fr;gap:3rem;padding-bottom:4rem}}
+
+    .about-card{background:rgba(250,245,237,.7);border:1px solid var(--s5);border-radius:6px;padding:2.5rem;
+      backdrop-filter:blur(8px)}
+    .about-label{font-size:.6rem;letter-spacing:.32em;text-transform:uppercase;color:var(--s3);margin-bottom:.5rem}
+    .about-name{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--s0);margin-bottom:.3rem}
+    .about-role{font-size:.8rem;color:var(--s2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.5rem}
+    .about-text{font-size:.9rem;line-height:2;color:var(--s1);margin-bottom:1.5rem}
+
+    .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+    .chip{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;padding:.4rem 1rem;
+      border:1px solid var(--s4);border-radius:30px;color:var(--s2);background:rgba(255,255,255,.5);
+      transition:all .2s var(--ease)}
+    .chip:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+    /* STAT BLOCKS */
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--s5);border:1px solid var(--s5);border-radius:6px;overflow:hidden;margin-top:2rem}
+    .stat{background:rgba(250,245,237,.8);padding:1.5rem;text-align:center}
+    .stat-n{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--accent);line-height:1}
+    .stat-l{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--s2);margin-top:.3rem}
+
+    /* PORTFOLIO */
+    #portfolio{padding:0 2rem 6rem;max-width:1400px;margin:0 auto}
+    .portfolio-intro{text-align:center;margin-bottom:2.5rem}
+    .portfolio-intro p{font-size:.88rem;color:var(--s2);line-height:1.9;max-width:540px;margin:0 auto 1.5rem}
+
+    .photo-link-btn{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 2rem;
+      border:1px solid var(--s3);border-radius:2px;font-size:.68rem;letter-spacing:.22em;
+      text-transform:uppercase;color:var(--s1);text-decoration:none;transition:all .25s var(--ease);
+      background:rgba(255,255,255,.4)}
+    .photo-link-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+    .portfolio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem}
+    @media(max-width:900px){.portfolio-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.portfolio-grid{grid-template-columns:1fr}}
+
+    .portfolio-item{position:relative;overflow:hidden;border-radius:4px;background:var(--s5);
+      cursor:pointer;box-shadow:0 4px 20px rgba(107,88,64,.1);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+    .portfolio-item:hover{transform:translateY(-5px);box-shadow:0 16px 48px rgba(107,88,64,.22)}
+    .portfolio-item img{width:100%;height:260px;object-fit:cover;display:block;transition:transform .6s var(--ease);
+      filter:sepia(6%) contrast(1.04) saturate(.96)}
+    .portfolio-item:hover img{transform:scale(1.06)}
+    .portfolio-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(58,46,34,.85) 0%,transparent 55%);
+      opacity:0;transition:opacity .3s var(--ease);display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem}
+    .portfolio-item:hover .portfolio-overlay{opacity:1}
+    .portfolio-overlay span{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--s7)}
+    .portfolio-overlay small{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--s4)}
+
+    /* LIGHTBOX */
+    .lightbox-ov{position:fixed;inset:0;z-index:300;background:rgba(20,14,8,.92);
+      backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
+    .lightbox-ov.open{opacity:1;pointer-events:all}
+    .lightbox-ov img{max-width:88vw;max-height:84vh;object-fit:contain;border-radius:2px;
+      box-shadow:0 40px 100px rgba(0,0,0,.6);filter:sepia(5%) contrast(1.04)}
+    .lb-close{position:fixed;top:1.5rem;right:1.8rem;background:none;border:none;color:var(--s5);
+      font-size:2rem;cursor:pointer;transition:color .2s,transform .2s}
+    .lb-close:hover{color:var(--accent);transform:rotate(90deg)}
+
+    /* CV */
+    #cv{max-width:900px;margin:0 auto;padding:0 2rem 6rem}
+    .cv-card{background:rgba(250,245,237,.7);border:1px solid var(--s5);border-radius:6px;padding:2.5rem;
+      backdrop-filter:blur(8px)}
+    .cv-entry{display:flex;gap:1.5rem;padding:1.2rem 0;border-bottom:1px solid var(--s6)}
+    .cv-entry:last-child{border-bottom:none}
+    .cv-year{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--accent);
+      min-width:100px;padding-top:.1rem;flex-shrink:0}
+    .cv-body{}
+    .cv-role{font-size:.85rem;font-weight:400;color:var(--s0);margin-bottom:.2rem}
+    .cv-employer{font-size:.75rem;letter-spacing:.1em;color:var(--s2);text-transform:uppercase}
+    .cv-btns{display:flex;gap:1rem;margin-top:1.8rem;flex-wrap:wrap}
+    .cv-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.8rem;
+      font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;border-radius:2px;
+      text-decoration:none;transition:all .25s var(--ease);cursor:pointer;border:none;font-family:'Jost',sans-serif}
+    .cv-btn-primary{background:var(--accent);color:#fff}
+    .cv-btn-primary:hover{background:var(--accent2)}
+    .cv-btn-outline{background:transparent;border:1px solid var(--s3);color:var(--s1)}
+    .cv-btn-outline:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+    /* KONTAKT */
+    #kontakt{max-width:900px;margin:0 auto;padding:0 2rem 8rem}
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+    @media(max-width:640px){.contact-grid{grid-template-columns:1fr}}
+    .contact-card{background:rgba(250,245,237,.7);border:1px solid var(--s5);border-radius:6px;padding:2rem;
+      backdrop-filter:blur(8px)}
+    .contact-card h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--s0);margin-bottom:.4rem}
+    .contact-card p{font-size:.83rem;line-height:1.9;color:var(--s2);margin-bottom:1.2rem}
+    .service-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem}
+    .service-list li{font-size:.8rem;color:var(--s1);display:flex;align-items:baseline;gap:.6rem}
+    .service-list li::before{content:'—';color:var(--accent);flex-shrink:0}
+
+    /* SOCIAL ICONS */
+    .social-row{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin-top:1rem}
+    .icon-btn{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 4px 14px rgba(0,0,0,.1);transition:transform .18s var(--ease),box-shadow .18s var(--ease);text-decoration:none}
+    .icon-btn:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.16)}
+    .icon-btn svg{width:18px;height:18px;display:block;fill:#fff}
+    .icon-youtube{background:#FF0000}
+    .icon-instagram{background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}
+    .icon-linkedin{background:#0A66C2}
+    .icon-photos{background:#34A853}
+    .icon-mail{background:var(--accent)}
+
+    /* FOOTER */
+    footer{background:var(--s1);color:var(--s4);padding:3.5rem 2rem;text-align:center}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:1.8rem;color:var(--s7);margin-bottom:.4rem}
+    footer p{font-size:.72rem;letter-spacing:.18em;color:var(--s3);margin-top:.3rem}
+
+    /* UTILS */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    .fade-in{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+    .fade-in.visible{opacity:1;transform:none}
+    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(4px);
+      background:var(--s0);color:var(--s6);padding:.65rem 1.6rem;border-radius:30px;
+      font-size:.72rem;letter-spacing:.12em;opacity:0;transition:opacity .3s,transform .3s;
+      z-index:500;white-space:nowrap;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grain-layer"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#om"        onclick="closeMobile()">Om mig</a>
+  <a href="#portfolio" onclick="closeMobile()">Portfolio</a>
+  <a href="#cv"        onclick="closeMobile()">CV</a>
+  <a href="#kontakt"   onclick="closeMobile()">Kontakt</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Martin Björck</a>
+  <ul class="nav-links">
+    <li><a href="#om">Om mig</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#cv">CV</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <button class="nav-burger" id="burger" onclick="toggleMobile()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<header>
+  <p class="hero-eyebrow">Tryckare &amp; Fotograf — Helsingborg</p>
+  <h1>Martin<br><em>Björck</em></h1>
+  <p class="hero-tagline">Precision i tryck · Känsla i bild</p>
+  <p class="hero-sub">Etiketttillverkning sedan 1993 · Analog och digital fotografi</p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scrolla</span>
+  </div>
+  <div class="dune-wave">
+    <svg viewBox="0 0 1440 90" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 90 C480 10 960 70 1440 25 L1440 90 Z" fill="var(--s7)"/>
+    </svg>
+  </div>
+</header>
+
+<!-- OM MIG -->
+<div class="section-header fade-in">
+  <span class="section-tag">Bakgrund</span>
+  <h2 class="section-title" id="om">Om <em>mig</em></h2>
+</div>
+
+<div id="om" style="padding-top:0">
+  <section class="about-card fade-in">
+    <div class="about-label">Profil</div>
+    <div class="about-name">Martin Björck</div>
+    <div class="about-role">Tryckare · Maskinoperatör · Fotograf</div>
+    <div class="accent-rule" style="margin:0 0 1.5rem 0"></div>
+    <p class="about-text">Jag är professionell tryckare sedan 1993 med djup erfarenhet av hela produktionskedjan inom etiketttillverkning — från tryckning och stansning till arkning och färdig rulle. Under lång tid arbetade jag med inkjet digitaltryck, flexo och screen 4-färg plan.</p>
+    <p class="about-text">Fotografering är min kreativa passion, med särskilt fokus på analog svartvit film. Jag framkallar egen film och gör mörkrumsförstoringar.</p>
+    <div class="chips">
+      <span class="chip">Etiketttillverkning</span>
+      <span class="chip">Flexotryck</span>
+      <span class="chip">Inkjet digitaltryck</span>
+      <span class="chip">Stansning & arkning</span>
+      <span class="chip">Turrut inline</span>
+      <span class="chip">5S & kvalitet</span>
+      <span class="chip">Skyddsombud</span>
+      <span class="chip">Analog fotografi</span>
+      <span class="chip">Mörkrumsteknik</span>
+    </div>
+  </section>
+
+  <div class="fade-in">
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-n">30+</div>
+        <div class="stat-l">År i tryckbranschen</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">11</div>
+        <div class="stat-l">År som skyddsombud</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">YKB</div>
+        <div class="stat-l">ADR · Truckkort</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">C2</div>
+        <div class="stat-l">Engelska · Flytande</div>
+      </div>
+    </div>
+
+    <div class="about-card fade-in" style="margin-top:1.5rem">
+      <div class="about-label">Baserad i</div>
+      <div class="about-name" style="font-size:1.3rem">Helsingborg, Skåne</div>
+      <div class="about-role" style="margin-bottom:1rem">Öppen för tjänster i hela södra Sverige</div>
+      <p style="font-size:.83rem;line-height:1.9;color:var(--s2)">Militär officer-utbildning vid Sjökrigsskolan. Hemvärnssoldat. Certifierad inom konflikthantering, krisstöd och UGL.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<div class="section-header fade-in">
+  <span class="section-tag">Bilder</span>
+  <h2 class="section-title" id="portfolio">Portfolio &amp; <em>Maskiner</em></h2>
+</div>
+
+<section id="portfolio" style="padding-top:0">
+  <div class="portfolio-intro fade-in">
+    <p>Inkjeten och några maskiner jag arbetat med under åren. Klicka på en bild för att förstora. Mina naturbilder och aktionfoton hittar du i fotoalbumet.</p>
+    <a class="photo-link-btn" href="https://photos.app.goo.gl/yRK7uGzKSt9YLdei6" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.1l1.6 1.6A4 4 0 0 0 17 9h3.9v.1L19.3 11A4 4 0 0 0 15.9 15l1.6 1.6V20H12v-3.5L10.4 16A4 4 0 0 0 7 11.9L5.4 10H3v-.1L5.4 8A4 4 0 0 0 10.4 4.6L12 3.1z"/></svg>
+      Öppna fotoalbumet
+    </a>
+    &nbsp;
+    <a class="photo-link-btn" href="https://martinbjk.github.io/" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      Fotogalleri
+    </a>
+  </div>
+
+  <div class="portfolio-grid fade-in">
+    <div class="portfolio-item" onclick="openLb('images/cmyk.jpg','CMYK-tryck','Färgstyrning')">
+      <img src="images/cmyk.jpg" alt="CMYK-tryck" onerror="this.style.background='#d9c4a0';this.style.height='260px'">
+      <div class="portfolio-overlay"><span>CMYK-tryck</span><small>Färgstyrning</small></div>
+    </div>
+    <div class="portfolio-item" onclick="openLb('images/inkjet.jpg','Inkjet digitaltryck','Konica Minolta')">
+      <img src="images/inkjet.jpg" alt="Inkjet" onerror="this.style.background='#c4a882';this.style.height='260px'">
+      <div class="portfolio-overlay"><span>Inkjet digitaltryck</span><small>Konica Minolta</small></div>
+    </div>
+    <div class="portfolio-item" onclick="openLb('images/maskin.jpg','Tryckmaskinen','Etiketttillverkning')">
+      <img src="images/maskin.jpg" alt="Maskin" onerror="this.style.background='#8b7355';this.style.height='260px'">
+      <div class="portfolio-overlay"><span>Tryckmaskinen</span><small>Etiketttillverkning</small></div>
+    </div>
+    <div class="portfolio-item" onclick="openLb('images/maskin2.jpg','Maskin 2','Produktion')">
+      <img src="images/maskin2.jpg" alt="Maskin 2" onerror="this.style.background='#d9c4a0';this.style.height='260px'">
+      <div class="portfolio-overlay"><span>Maskin 2</span><small>Produktion</small></div>
+    </div>
+    <div class="portfolio-item" onclick="openLb('images/pharma.jpg','Pharma-etiketter','Precisionsarbete')">
+      <img src="images/pharma.jpg" alt="Pharma" onerror="this.style.background='#c4a882';this.style.height='260px'">
+      <div class="portfolio-overlay"><span>Pharma-etiketter</span><small>Precisionsarbete</small></div>
+    </div>
+    <div class="portfolio-item" onclick="openLb('images/farg.jpg','Färgblandning','Kvalitetskontroll')">
+      <img src="images/farg.jpg" alt="Färg" onerror="this.style.background='#8b7355';this.style.height='260px'">
+      <div class="portfolio-overlay"><span>Färgblandning</span><small>Kvalitetskontroll</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox-ov" id="lb" onclick="closeLb()">
+  <img id="lbImg" src="" alt="">
+  <button class="lb-close" onclick="closeLb()">×</button>
+</div>
+
+<!-- CV -->
+<div class="section-header fade-in">
+  <span class="section-tag">Erfarenhet</span>
+  <h2 class="section-title" id="cv">Mitt <em>CV</em></h2>
+</div>
+
+<section id="cv" style="padding-top:0">
+  <div class="cv-card fade-in">
+    <div class="cv-entry">
+      <div class="cv-year">2025</div>
+      <div class="cv-body">
+        <div class="cv-role">Kriminalvårdare (Sommarvikariat)</div>
+        <div class="cv-employer">Kriminalvården — Häktet Helsingborg</div>
+      </div>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-year">2023–2024</div>
+      <div class="cv-body">
+        <div class="cv-role">YKB · ADR · Truckkort · Arbete på väg · UGL</div>
+        <div class="cv-employer">Yrkesakademin — Helsingborg</div>
+      </div>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-year">1995–2022</div>
+      <div class="cv-body">
+        <div class="cv-role">Etikettproducent / Tryckare · Skyddsombud 2011–2022</div>
+        <div class="cv-employer">Märkas AB / Strålfors AB / Eson Pac AB — Göteborg & Åstorp</div>
+      </div>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-year">1993–1994</div>
+      <div class="cv-body">
+        <div class="cv-role">Tryckare (Flexo) · Produktionskoordinator</div>
+        <div class="cv-employer">Printcom AB / Printcom Etikett — Linköping & Göteborg</div>
+      </div>
+    </div>
+    <div class="cv-entry">
+      <div class="cv-year">Militär</div>
+      <div class="cv-body">
+        <div class="cv-role">Officer (16 månader) · Hemvärnssoldat</div>
+        <div class="cv-employer">Sjökrigsskolan — Marinen</div>
+      </div>
+    </div>
+    <div class="cv-btns">
+      <a class="cv-btn cv-btn-primary" href="files/martin-bjorck-cv.pdf" target="_blank">Öppna CV</a>
+      <a class="cv-btn cv-btn-outline" href="files/martin-bjorck-cv.pdf" download>↓ Ladda ner CV</a>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<div class="section-header fade-in">
+  <span class="section-tag">Anlita mig</span>
+  <h2 class="section-title" id="kontakt"><em>Kontakt</em></h2>
+</div>
+
+<section id="kontakt" style="padding-top:0">
+  <div class="contact-grid fade-in">
+    <div class="contact-card">
+      <h3>Fotografering</h3>
+      <p>Jag erbjuder flexibel och prisvärd fotografering i Helsingborg och Skåne — som hobbyverksamhet.</p>
+      <ul class="service-list">
+        <li>Porträtt — professionella eller personliga</li>
+        <li>Produktfoto & maskindokumentation</li>
+        <li>Miljöbilder & arbetsplatsfoto</li>
+        <li>Landskap & natur</li>
+        <li>Analog svartvit film & mörkrumsförstoring</li>
+      </ul>
+      <a class="cv-btn cv-btn-primary" href="mailto:martinbjk@gmail.com?subject=Förfrågan%20om%20fotografering">Kontakta mig</a>
+    </div>
+
+    <div class="contact-card">
+      <h3>Utrustning</h3>
+      <p>Jag fotograferar med:</p>
+      <ul class="service-list">
+        <li>Digital kamera — hög upplösning</li>
+        <li>Analog film — svartvit</li>
+        <li>Egen framkallning av film</li>
+        <li>Traditionella mörkrumsförstoringar</li>
+      </ul>
+      <div class="social-row">
+        <a class="icon-btn icon-youtube" href="https://www.youtube.com/@martinSWE" target="_blank" title="YouTube">
+          <svg viewBox="0 0 24 24"><path d="M23.5 6.2s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.9 2.5 12 2.5 12 2.5s-4.9 0-8.6.4c-.4 0-1.4.1-2.2 1C.6 4.6.4 6.2.4 6.2S0 8.1 0 10v4c0 1.9.4 3.8.4 3.8s.2 1.6.8 2.3c.8.9 1.9.9 2.4 1 1.7.2 7.1.4 7.1.4s4.9 0 8.6-.4c.4 0 1.4-.1 2.2-1 .6-.7.8-2.3.8-2.3s.4-1.9.4-3.8v-4c0-1.9-.4-3.8-.4-3.8zM9.8 15.1V8.9l6.1 3.1-6.1 3.1z"/></svg>
+        </a>
+        <a class="icon-btn icon-instagram" href="https://www.instagram.com/martinbjorck/" target="_blank" title="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 6.1a4.9 4.9 0 1 0 .001 9.801A4.9 4.9 0 0 0 12 8.1zm6.5-3.6a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM12 10.3a1.7 1.7 0 1 1 0 3.4 1.7 1.7 0 0 1 0-3.4z"/></svg>
+        </a>
+        <a class="icon-btn icon-linkedin" href="https://www.linkedin.com/in/martin-björck-b0365312a" target="_blank" title="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1-.02-5zM3 9h4v12H3zM9 9h3.7v1.6h.1c.5-.9 1.8-1.9 3.7-1.9 4 0 4.8 2.6 4.8 6v7H16v-6.2c0-1.5 0-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"/></svg>
+        </a>
+        <a class="icon-btn icon-photos" href="https://photos.app.goo.gl/yRK7uGzKSt9YLdei6" target="_blank" title="Google Photos">
+          <svg viewBox="0 0 24 24"><path d="M12 3.1l1.6 1.6A4 4 0 0 0 17 9h3.9v.1L19.3 11A4 4 0 0 0 15.9 15l1.6 1.6V20H12v-3.5L10.4 16A4 4 0 0 0 7 11.9L5.4 10H3v-.1L5.4 8A4 4 0 0 0 10.4 4.6L12 3.1z"/></svg>
+        </a>
+        <a class="icon-btn icon-mail" href="mailto:martinbjk@gmail.com" title="E-post">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+      </div>
+      <p style="font-size:.65rem;letter-spacing:.1em;color:var(--s3);margin-top:.8rem">YouTube · Instagram · LinkedIn · Google Photos · E-post</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Martin Björck</div>
+  <p>Tryckare &amp; Fotograf — Helsingborg</p>
+  <p style="margin-top:.8rem">© <span id="yr"></span> Martin Björck &nbsp;·&nbsp; <a href="https://martinbjk.github.io/" style="color:var(--s3);text-decoration:none">Fotogalleri</a></p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Mobile menu
+  function toggleMobile(){
+    document.getElementById('burger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+  function closeMobile(){
+    document.getElementById('burger').classList.remove('open');
+    document.getElementById('mobileMenu').classList.remove('open');
+  }
+
+  // Lightbox
+  function openLb(src, title, cat){
+    const lb = document.getElementById('lb');
+    const img = document.getElementById('lbImg');
+    img.src = src; img.alt = title;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb(){
+    document.getElementById('lb').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeLb(); });
+
+  // Scroll fade-in
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold:.12});
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
